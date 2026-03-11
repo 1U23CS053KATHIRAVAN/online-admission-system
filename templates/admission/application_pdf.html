@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Application PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h2 { color: #2a5298; }
+    </style>
+</head>
+<body>
+    <h2>Application Details</h2>
+    <p><strong>Full Name:</strong> {{ student.full_name }}</p>
+    <p><strong>Course:</strong> {{ student.course.name }}</p>
+    <p><strong>Application ID:</strong> {{ student.application_id }}</p>
+    <p><strong>Status:</strong> {{ student.status }}</p>
+    <p><strong>Applied On:</strong> {{ student.created_at|date:"F d, Y, h:i a" }}</p>
+
+    {% if student.admin_remark %}
+        <p><strong>Admin Remark:</strong> {{ student.admin_remark }}</p>
+    {% endif %}
+</body>
+</html>

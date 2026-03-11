@@ -1,0 +1,199 @@
+{% extends "admission/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* ===== Dashboard Header ===== */
+.dashboard-header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 50px 30px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+}
+
+/* ===== Card Styling ===== */
+.dashboard-card {
+    border-radius: 20px;
+    padding: 30px;
+    border: none;
+    transition: 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+/* ===== Status Box ===== */
+.status-box {
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.progress {
+    height: 12px;
+    border-radius: 20px;
+}
+
+.empty-box {
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+}
+
+/* ===== Timeline Tracker ===== */
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    position: relative;
+}
+
+.step {
+    text-align: center;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dee2e6;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: auto;
+}
+
+.step.active .step-circle {
+    background: #28a745;
+}
+
+.step.pending .step-circle {
+    background: #ffc107;
+}
+
+.step-text {
+    margin-top: 8px;
+    font-size: 14px;
+}
+</style>
+
+<div class="container mt-5 mb-5">
+
+    <div class="dashboard-header text-center">
+        <h2>Welcome, {{ request.user.username }} 👋</h2>
+        <p class="mb-0">Track your admission status and application details here.</p>
+    </div>
+
+    {% if student %}
+
+    <div class="row g-4">
+
+        <!-- LEFT SIDE -->
+        <div class="col-md-4">
+            <div class="card dashboard-card text-center shadow mb-4">
+                <h5>{{ student.full_name }}</h5>
+                <p class="text-muted mb-1">{{ student.course.name }}</p>
+                <small>Application ID:</small>
+                <strong>{{ student.application_id }}</strong>
+                <!-- Removed the <hr> here -->
+                <a href="{% url 'admission:student_profile' %}"
+                   class="btn btn-outline-dark btn-sm rounded-pill">
+                    View Profile
+                </a>
+            </div>
+
+            {% if student.status == "Pending" %}
+                <div class="status-box bg-warning text-dark"><h5>Application Under Review</h5></div>
+            {% elif student.status == "Approved" %}
+                <div class="status-box bg-success"><h5>Application Approved 🎉</h5></div>
+            {% elif student.status == "Rejected" %}
+                <div class="status-box bg-danger"><h5>Application Rejected</h5></div>
+            {% elif student.status == "Waiting" %}
+                <div class="status-box bg-primary"><h5>On Waiting List</h5></div>
+            {% endif %}
+
+            <div class="card dashboard-card shadow">
+                <h6 class="mb-3">Application Progress</h6>
+                {% if student.status == "Pending" %}
+                    <div class="progress"><div class="progress-bar bg-warning" style="width:40%"></div></div>
+                {% elif student.status == "Approved" %}
+                    <div class="progress"><div class="progress-bar bg-success" style="width:100%"></div></div>
+                {% elif student.status == "Rejected" %}
+                    <div class="progress"><div class="progress-bar bg-danger" style="width:100%"></div></div>
+                {% elif student.status == "Waiting" %}
+                    <div class="progress"><div class="progress-bar bg-primary" style="width:70%"></div></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-8">
+            <div class="card dashboard-card shadow">
+                <h5 class="mb-4">Application Details</h5>
+                <p><strong>Full Name:</strong> {{ student.full_name }}</p>
+                <p><strong>Course Applied:</strong> {{ student.course.name }}</p>
+                <p><strong>Applied On:</strong> {{ student.created_at|date:"F d, Y, h:i a" }}</p>
+                <p><strong>Status:</strong> {{ student.status }}</p>
+
+                {% if student.admin_remark %}
+                <div class="alert alert-info mt-3">
+                    <strong>Admin Remark:</strong><br>{{ student.admin_remark }}
+                </div>
+                {% endif %}
+
+                <hr>
+
+                {% if student.document %}
+                    <a href="{{ student.document.url }}" target="_blank"
+                       class="btn btn-outline-primary rounded-pill">
+                        📄 View Uploaded Document
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'admission:download_application_pdf' %}"
+                   class="btn btn-success rounded-pill ms-2">
+                    Download Application PDF
+                </a>
+            </div>
+
+            <div class="card dashboard-card shadow mt-4">
+                <h5 class="text-center mb-4">Application Timeline</h5>
+                <div class="timeline">
+                    <div class="step active">
+                        <div class="step-circle">✓</div>
+                        <div class="step-text">Submitted</div>
+                    </div>
+                    <div class="step {% if student.status != 'Pending' %}active{% else %}pending{% endif %}">
+                        <div class="step-circle">✓</div>
+                        <div class="step-text">Under Review</div>
+                    </div>
+                    <div class="step {% if student.status == 'Approved' %}active{% elif student.status == 'Rejected' %}pending{% endif %}">
+                        <div class="step-circle">✓</div>
+                        <div class="step-text">{{ student.status }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% else %}
+    <div class="empty-box shadow text-center">
+        <h4>You have not applied yet.</h4>
+        <p class="text-muted">Start your admission process now.</p>
+        <a href="{% url 'admission:apply_course' %}" class="btn btn-primary rounded-pill px-4 mt-3">Apply Now</a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

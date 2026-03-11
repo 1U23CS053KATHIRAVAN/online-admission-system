@@ -1,0 +1,51 @@
+{% extends 'admission/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">
+        <i class="fas fa-user-shield"></i> Admin Dashboard
+    </h2>
+
+    <div class="row text-center">
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white p-3 shadow">
+                <h4><i class="fas fa-user-graduate"></i> Total Students</h4>
+                <h2>{{ total_students }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark p-3 shadow">
+                <h4><i class="fas fa-hourglass-half"></i> Pending</h4>
+                <h2>{{ pending }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white p-3 shadow">
+                <h4><i class="fas fa-check-circle"></i> Approved</h4>
+                <h2>{{ approved }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-danger text-white p-3 shadow">
+                <h4><i class="fas fa-times-circle"></i> Rejected</h4>
+                <h2>{{ rejected }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'admission:all_students' %}" class="btn btn-dark btn-lg">
+            <i class="fas fa-users"></i> Manage Applications
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

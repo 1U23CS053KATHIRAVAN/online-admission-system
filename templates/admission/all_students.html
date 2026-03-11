@@ -1,0 +1,85 @@
+{% extends 'admission/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<h2 class="text-center mb-4">
+<i class="fas fa-users"></i> Student Applications
+</h2>
+
+<div class="table-responsive">
+
+<table class="table table-bordered table-striped shadow">
+
+<thead class="table-dark text-center">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Course</th>
+<th>Phone</th>
+<th>Status</th>
+<th>Document</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for student in students %}
+
+<tr>
+
+<td>{{ student.id }}</td>
+
+<td>{{ student.full_name }}</td>
+
+<td>{{ student.course.name }}</td>
+
+<td>{{ student.phone }}</td>
+
+<td>
+<span class="badge bg-info">
+{{ student.status }}
+</span>
+</td>
+
+<td>
+
+{% if student.document %}
+<a href="{{ student.document.url }}" target="_blank" class="btn btn-sm btn-secondary">
+View
+</a>
+{% else %}
+No File
+{% endif %}
+
+</td>
+
+<td>
+
+<a href="{% url 'admission:update_status' student.id 'Approved' %}" 
+class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="{% url 'admission:update_status' student.id 'Rejected' %}" 
+class="btn btn-danger btn-sm">
+Reject
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

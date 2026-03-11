@@ -1,0 +1,35 @@
+{% extends "admission/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h3 class="mb-4">Student Profile</h3>
+
+        <div class="row">
+
+            <!-- Removed profile image -->
+            <div class="col-md-12">
+                <p><strong>Full Name:</strong> {{ student.full_name }}</p>
+                <p><strong>Date of Birth:</strong> {{ student.dob }}</p>
+                <p><strong>Phone:</strong> {{ student.phone }}</p>
+                <p><strong>Address:</strong> {{ student.address }}</p>
+                <p><strong>Course:</strong> {{ student.course.name }}</p>
+                <p><strong>Application ID:</strong> {{ student.application_id }}</p>
+
+                <a href="{% url 'admission:student_dashboard' %}"
+                   class="btn btn-primary mt-3">
+                    Back to Dashboard
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
